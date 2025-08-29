@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          record_id: string | null
+          table_name: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          record_id?: string | null
+          table_name: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          record_id?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       early_access: {
         Row: {
           created_at: string
@@ -38,12 +65,48 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist: {
+        Row: {
+          created_at: string
+          discount_code: string | null
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          source: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          discount_code?: string | null
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          source?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          discount_code?: string | null
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          source?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_waitlist_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
