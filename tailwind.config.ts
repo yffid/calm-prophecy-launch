@@ -18,7 +18,22 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'poppins': ['Poppins', 'system-ui', 'sans-serif'],
+				'inter': ['Inter', 'system-ui', 'sans-serif'],
+			},
 			colors: {
+				// Momta Core Colors
+				'momta-blue': 'hsl(var(--momta-blue))',
+				'momta-blue-light': 'hsl(var(--momta-blue-light))',
+				'momta-blue-dark': 'hsl(var(--momta-blue-dark))',
+				'momta-slate': 'hsl(var(--momta-slate))',
+				'momta-slate-light': 'hsl(var(--momta-slate-light))',
+				'momta-slate-dark': 'hsl(var(--momta-slate-dark))',
+				'momta-night': 'hsl(var(--momta-night))',
+				'momta-night-light': 'hsl(var(--momta-night-light))',
+				
+				// Legacy shadcn colors mapped to Momta system
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -52,21 +67,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'momta-xl': 'var(--radius-momta-xl)',
 			},
 			keyframes: {
 				'accordion-down': {
