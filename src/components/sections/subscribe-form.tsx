@@ -1,0 +1,276 @@
+"use client";
+
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { GlassCard } from '@/components/ui/glass-card';
+import { X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+const formSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  phone: z.string().min(10, 'Please enter a valid phone number').optional().or(z.literal('')),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+interface SubscribeFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+  const { toast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Check if email already exists
+      const { data: existingUser } = await supabase
+        .from('waitlist')
+        .select('email, discount_code')
+        .eq('email', data.email)
+        .single();
+
+      if (existingUser) {
+        toast({
+          title: "Already registered!",
+          description: `You're already on our waitlist with discount code: ${existingUser.discount_code}`,
+          variant: "default",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Insert new subscriber
+      const { data: newSubscriber, error } = await supabase
+        .from('waitlist')
+        .insert({
+          name: data.name,
+          email: data.email,
+          phone: data.phone || null,
+          status: 'pending',
+        })
+        .select('discount_code')
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      setDiscountCode(newSubscriber.discount_code);
+      setIsSuccess(true);
+      reset();
+
+      // Track success (you could add analytics here)
+      console.log('New waitlist subscriber:', data.email);
+
+    } catch (error: any) {
+      console.error('Subscription error:', error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or contact support@momta.org if the issue persists.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setIsSuccess(false);
+    setDiscountCode('');
+    reset();
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-momta-night/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={handleClose}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GlassCard variant="elevated" className="relative">
+              {/* Close Button */}
+              <button
+                onClick={handleClose}
+                className="absolute top-4 right-4 text-momta-slate-dark hover:text-momta-slate-light transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              {/* Success State */}
+              {isSuccess ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center space-y-6"
+                >
+                  <div className="flex justify-center">
+                    <CheckCircle size={48} className="text-momta-blue-light animate-momta-glow" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-semibold font-poppins text-momta-slate-light">
+                      You're in! The future awaits.
+                    </h3>
+                    <p className="text-momta-slate">
+                      Your 20% discount is secured for 2028.
+                    </p>
+                  </div>
+
+                  {discountCode && (
+                    <div className="p-4 bg-momta-blue/10 rounded-lg border border-momta-blue/20">
+                      <p className="text-sm text-momta-slate-dark mb-2">Your exclusive discount code:</p>
+                      <code className="text-lg font-mono font-semibold text-momta-blue-light">
+                        {discountCode}
+                      </code>
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={handleClose}
+                    className="w-full bg-gradient-to-r from-momta-blue to-momta-blue-light hover:from-momta-blue-dark hover:to-momta-blue"
+                  >
+                    Continue to the Future
+                  </Button>
+                </motion.div>
+              ) : (
+                /* Form State */
+                <div className="space-y-6">
+                  <div className="text-center space-y-2">
+                    <h3 className="text-xl font-semibold font-poppins text-momta-slate-light">
+                      Join the Future
+                    </h3>
+                    <p className="text-sm text-momta-slate">
+                      Secure your 20% discount for Momta 2028
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    {/* Name Field */}
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="text-momta-slate-light">
+                        Full Name
+                      </Label>
+                      <Input
+                        id="name"
+                        {...register('name')}
+                        placeholder="Enter your full name"
+                        className="bg-momta-night-light/50 border-momta-slate-dark/30 text-momta-slate-light placeholder:text-momta-slate-dark focus:border-momta-blue"
+                      />
+                      {errors.name && (
+                        <p className="text-sm text-red-400 flex items-center gap-1">
+                          <AlertCircle size={14} />
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Email Field */}
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-momta-slate-light">
+                        Email Address
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        {...register('email')}
+                        placeholder="Enter your email"
+                        className="bg-momta-night-light/50 border-momta-slate-dark/30 text-momta-slate-light placeholder:text-momta-slate-dark focus:border-momta-blue"
+                      />
+                      {errors.email && (
+                        <p className="text-sm text-red-400 flex items-center gap-1">
+                          <AlertCircle size={14} />
+                          {errors.email.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Phone Field (Optional) */}
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-momta-slate-light">
+                        Phone Number <span className="text-momta-slate-dark text-xs">(Optional)</span>
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        {...register('phone')}
+                        placeholder="Enter your phone number"
+                        className="bg-momta-night-light/50 border-momta-slate-dark/30 text-momta-slate-light placeholder:text-momta-slate-dark focus:border-momta-blue"
+                      />
+                      {errors.phone && (
+                        <p className="text-sm text-red-400 flex items-center gap-1">
+                          <AlertCircle size={14} />
+                          {errors.phone.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-momta-blue to-momta-blue-light hover:from-momta-blue-dark hover:to-momta-blue disabled:opacity-50"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin mr-2" />
+                          Securing Your Future...
+                        </>
+                      ) : (
+                        'Claim Your 20% Discount'
+                      )}
+                    </Button>
+                  </form>
+
+                  {/* Trust Indicators */}
+                  <div className="text-center space-y-2 pt-2 border-t border-momta-slate-dark/20">
+                    <p className="text-xs text-momta-slate-dark">
+                      We respect your privacy. No spam, ever.
+                    </p>
+                    <p className="text-xs text-momta-slate-dark">
+                      Questions? Contact us at <span className="text-momta-blue-light">support@momta.org</span>
+                    </p>
+                  </div>
+                </div>
+              )}
+            </GlassCard>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}

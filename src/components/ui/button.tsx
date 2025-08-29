@@ -18,12 +18,18 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Momta 2028 Design System Variants
+        hero: "bg-gradient-to-r from-momta-blue to-momta-blue-light hover:from-momta-blue-dark hover:to-momta-blue text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-momta-xl m-lens",
+        glass: "glass-card border-momta-blue/20 text-momta-slate-light hover:text-white hover:bg-momta-blue/10 transition-all duration-300",
+        minimal: "bg-transparent text-momta-slate-light hover:text-momta-blue-light border border-momta-slate-dark/30 hover:border-momta-blue/50 transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        // Momta specific sizes
+        hero: "h-12 px-8 py-4 text-base font-semibold",
       },
     },
     defaultVariants: {
