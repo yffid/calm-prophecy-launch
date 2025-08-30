@@ -7,6 +7,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { LogOut, Users, Mail, Phone, Calendar, TrendingUp, Download, Loader2 } from 'lucide-react';
+import { setupAdminUser } from '@/utils/admin-setup';
 
 interface WaitlistEntry {
   id: string;
@@ -30,6 +31,7 @@ const Admin = () => {
   const [stats, setStats] = useState<WaitlistStats>({ total: 0, today: 0, this_week: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [isSettingUpAdmin, setIsSettingUpAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const { toast } = useToast();
 
@@ -89,6 +91,34 @@ const Admin = () => {
       });
     } catch (error) {
       console.error('Sign out error:', error);
+    }
+  };
+
+  const handleSetupAdmin = async () => {
+    setIsSettingUpAdmin(true);
+    try {
+      const result = await setupAdminUser();
+      if (result.success) {
+        toast({
+          title: "Admin setup successful",
+          description: "Admin user has been created successfully.",
+        });
+      } else {
+        toast({
+          title: "Admin setup failed",
+          description: result.error || "Failed to set up admin user.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Admin setup error:', error);
+      toast({
+        title: "Setup error",
+        description: "An unexpected error occurred during admin setup.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSettingUpAdmin(false);
     }
   };
 
@@ -187,10 +217,29 @@ const Admin = () => {
               <h1 className="text-3xl font-bold font-poppins">Momta 2028 Admin</h1>
               <p className="text-muted-foreground">Welcome back, {user?.email}</p>
             </div>
-            <Button onClick={handleSignOut} variant="outline" className="gap-2">
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
+            <div className="flex gap-3">
+              {user?.email !== 'momta@momta.org' && (
+                <Button 
+                  onClick={handleSetupAdmin} 
+                  variant="glass" 
+                  disabled={isSettingUpAdmin}
+                  className="gap-2"
+                >
+                  {isSettingUpAdmin ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Setting up...
+                    </>
+                  ) : (
+                    'Setup Admin'
+                  )}
+                </Button>
+              )}
+              <Button onClick={handleSignOut} variant="outline" className="gap-2">
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </Button>
+            </div>
           </motion.div>
 
           {/* Stats Cards */}
