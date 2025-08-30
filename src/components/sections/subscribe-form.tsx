@@ -10,13 +10,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { GlassCard } from '@/components/ui/glass-card';
-import { X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, Loader2, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { checkFormSubmissionLimit } from '@/middleware/rate-limiter';
 
 const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  phone: z.string().min(10, 'Please enter a valid phone number').optional().or(z.literal('')),
+  name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name too long'),
+  email: z.string().email('Please enter a valid email address').max(255, 'Email too long'),
+  phone: z.string()
+    .min(10, 'Please enter a valid phone number')
+    .max(20, 'Phone number too long')
+    .optional()
+    .or(z.literal('')),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -45,12 +50,25 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
     setIsSubmitting(true);
     
     try {
+      // Client-side rate limiting check
+      const userIdentifier = data.email.toLowerCase();
+      const rateLimitCheck = checkFormSubmissionLimit(userIdentifier);
+      
+      if (!rateLimitCheck.allowed) {
+        toast({
+          title: "Slow down!",
+          description: "Too many attempts. Please try again in a few minutes.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Use the edge function for secure, rate-limited subscription
       const { data: result, error } = await supabase.functions.invoke('subscribe', {
         body: {
-          name: data.name,
-          email: data.email,
-          phone: data.phone || null,
+          name: data.name.trim(),
+          email: data.email.toLowerCase().trim(),
+          phone: data.phone?.trim() || null,
         }
       });
 
@@ -73,7 +91,7 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
           });
         } else if (result.error.includes('Too many requests')) {
           toast({
-            title: "Slow down!",
+            title: "Rate limit exceeded",
             description: "Too many requests. Please try again in a few minutes.",
             variant: "destructive",
           });
@@ -91,7 +109,14 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
       setIsSuccess(true);
       reset();
 
-      // Track success (you could add analytics here)
+      // Track success for analytics
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'waitlist_signup', {
+          event_category: 'engagement',
+          event_label: 'momta_2028_waitlist'
+        });
+      }
+
       console.log('New waitlist subscriber:', data.email);
 
     } catch (error: any) {
@@ -135,7 +160,8 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
               {/* Close Button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-momta-slate-dark hover:text-momta-slate-light transition-colors"
+                className="absolute top-4 right-4 text-momta-slate-dark hover:text-momta-slate-light transition-colors z-10"
+                aria-label="Close form"
               >
                 <X size={20} />
               </button>
@@ -166,6 +192,9 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
                       <code className="text-lg font-mono font-semibold text-momta-blue-light">
                         {discountCode}
                       </code>
+                      <p className="text-xs text-momta-slate-dark mt-2">
+                        Save this code - you'll need it in 2028!
+                      </p>
                     </div>
                   )}
 
@@ -199,6 +228,7 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
                         {...register('name')}
                         placeholder="Enter your full name"
                         className="bg-momta-night-light/50 border-momta-slate-dark/30 text-momta-slate-light placeholder:text-momta-slate-dark focus:border-momta-blue"
+                        maxLength={100}
                       />
                       {errors.name && (
                         <p className="text-sm text-red-400 flex items-center gap-1">
@@ -219,6 +249,7 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
                         {...register('email')}
                         placeholder="Enter your email"
                         className="bg-momta-night-light/50 border-momta-slate-dark/30 text-momta-slate-light placeholder:text-momta-slate-dark focus:border-momta-blue"
+                        maxLength={255}
                       />
                       {errors.email && (
                         <p className="text-sm text-red-400 flex items-center gap-1">
@@ -239,6 +270,7 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
                         {...register('phone')}
                         placeholder="Enter your phone number"
                         className="bg-momta-night-light/50 border-momta-slate-dark/30 text-momta-slate-light placeholder:text-momta-slate-dark focus:border-momta-blue"
+                        maxLength={20}
                       />
                       {errors.phone && (
                         <p className="text-sm text-red-400 flex items-center gap-1">
@@ -267,6 +299,10 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
 
                   {/* Trust Indicators */}
                   <div className="text-center space-y-2 pt-2 border-t border-momta-slate-dark/20">
+                    <div className="flex items-center justify-center gap-2 text-xs text-momta-slate-dark">
+                      <Shield className="w-3 h-3" />
+                      <span>Secure & encrypted. GDPR compliant.</span>
+                    </div>
                     <p className="text-xs text-momta-slate-dark">
                       We respect your privacy. No spam, ever.
                     </p>
