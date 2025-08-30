@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Menu, X } from 'lucide-react';
 
 interface NavbarProps {
@@ -105,7 +106,9 @@ export function Navbar({ onJoinWaitlist }: NavbarProps) {
               >
                 Join Waitlist
               </Button>
-            </motion.div>
+            
+            <ThemeToggle />
+            </div>
 
             {/* Mobile Menu Button */}
             <motion.button
@@ -151,6 +154,10 @@ export function Navbar({ onJoinWaitlist }: NavbarProps) {
               >
                 Join Waitlist
               </Button>
+              
+              <div className="flex justify-center pt-2">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </motion.div>

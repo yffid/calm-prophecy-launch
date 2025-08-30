@@ -7,9 +7,11 @@ import { Hero } from '@/components/sections/hero';
 import { Countdown } from '@/components/sections/countdown';
 import { Vision } from '@/components/sections/vision';
 import { Timeline } from '@/components/sections/timeline';
+import { Updates } from '@/components/sections/updates';
 import { SubscribeForm } from '@/components/sections/subscribe-form';
 import { Footer } from '@/components/sections/footer';
 import { SEOHead } from '@/components/seo/SEOHead';
+import { RobotAnimation } from '@/components/ui/robot-animation';
 import { organizationStructuredData, productStructuredData, websiteStructuredData } from '@/utils/structured-data';
 
 const Index = () => {
@@ -36,9 +38,10 @@ const Index = () => {
   return (
     <>
       <SEOHead
-        title="Momta 2028 - The Dawn of Serene Intelligence | Coming Soon"
-        description="Join the waitlist for Momta 2028 - where artificial intelligence meets tranquility. Secure your exclusive 20% launch discount for the future of serene intelligence."
+        title="Momta 2028 - AI Robots & Future Robotics | Friendly Robot Technology"
+        description="Momta 2028: Leading AI robots and friendly robotics technology. Best robots for home automation, cheap robots with advanced AI. Join the future of robotics - launching 2028."
         canonical="https://momta.org"
+        keywords="AI robots, friendly robots, cheap robots, best robots, future of robotics, Momta robotics, artificial intelligence robots, home automation robots, robot technology 2028"
         structuredData={combinedStructuredData}
       />
       
@@ -60,9 +63,26 @@ const Index = () => {
           {/* Timeline Section */}
           <Timeline />
 
+          {/* Updates Section */}
+          <Updates />
+
           {/* Spacer for Visual Breathing Room */}
           <section className="py-20">
             <div className="container mx-auto px-4">
+              {/* Robot Animation Demo */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="text-center mb-12"
+              >
+                <RobotAnimation size="lg" className="mx-auto mb-4" />
+                <p className="text-momta-slate-dark text-sm italic">
+                  A glimpse of our friendly robot companions
+                </p>
+              </motion.div>
+              
               <motion.div
                 initial={{ opacity: 0, scaleX: 0 }}
                 whileInView={{ opacity: 1, scaleX: 1 }}

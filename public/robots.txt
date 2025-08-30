@@ -16,12 +16,19 @@ Allow: /
 
 User-agent: *
 Allow: /
+Allow: /updates
+Allow: /ai-robots
+Allow: /friendly-robots
+Allow: /home-automation-robots
 Disallow: /admin
 Disallow: /auth
 Disallow: /api/
 
 # Sitemap location
 Sitemap: https://momta.org/sitemap.xml
+
+# Additional sitemaps for better indexing
+Sitemap: https://momta.org/updates-sitemap.xml
 
 # Crawl delay for general bots
 Crawl-delay: 1

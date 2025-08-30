@@ -81,6 +81,31 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Light Mode Theme */
+  .light {
+    /* Light mode Momta colors */
+    --momta-night: 0 0% 98%;             /* Light background #FAFAFA */
+    --momta-night-light: 0 0% 95%;       /* Light elevated surfaces #F2F2F2 */
+    --momta-slate: 220 13% 25%;          /* Dark text for light mode */
+    --momta-slate-light: 220 13% 15%;    /* Darker text */
+    --momta-slate-dark: 220 13% 65%;     /* Lighter muted text */
+    
+    /* Glass morphism for light mode */
+    --glass-bg: 0 0% 100% / 0.8;         /* Light glass background */
+    --glass-border: 215 95% 55% / 0.15;  /* Subtle blue border */
+    
+    /* Update legacy tokens for light mode */
+    --background: var(--momta-night);
+    --foreground: var(--momta-slate);
+    --card: var(--momta-night-light);
+    --card-foreground: var(--momta-slate);
+    --muted: 220 13% 95%;
+    --muted-foreground: var(--momta-slate-dark);
+    --border: 220 13% 85%;
+    --input: 0 0% 100%;
+    --accent-foreground: var(--momta-night);
+    --secondary-foreground: var(--momta-slate);
+  }
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;

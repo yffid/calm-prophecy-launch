@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 interface SEOHeadProps {
   title?: string;
   description?: string;
+  keywords?: string;
   canonical?: string;
   ogImage?: string;
   ogType?: string;
@@ -13,8 +14,9 @@ interface SEOHeadProps {
 }
 
 export function SEOHead({
-  title = "Momta 2028 - The Dawn of Serene Intelligence | Coming Soon",
-  description = "Join the waitlist for Momta 2028 - where artificial intelligence meets tranquility. Secure your exclusive 20% launch discount for the future of serene intelligence.",
+  title = "Momta 2028 - AI Robots & Future Robotics | Friendly Robot Technology",
+  description = "Momta 2028: Leading AI robots and friendly robotics technology. Best robots for home automation, cheap robots with advanced AI. Join the future of robotics - launching 2028.",
+  keywords = "AI robots, friendly robots, cheap robots, best robots, future of robotics, Momta robotics, artificial intelligence robots, home automation robots, robot technology 2028, serene intelligence",
   canonical = "https://momta.org",
   ogImage = "https://momta.org/og-image.jpg",
   ogType = "website",
@@ -28,7 +30,7 @@ export function SEOHead({
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="author" content="Momta Technology" />
-      <meta name="keywords" content="artificial intelligence 2028, AI innovation, future robotics, serene intelligence, calm prophecy, technology 2028, momta robotics" />
+      <meta name="keywords" content={keywords} />
       
       {/* Canonical URL */}
       <link rel="canonical" href={canonical} />
@@ -57,6 +59,19 @@ export function SEOHead({
       <meta name="theme-color" content="#1E7EFF" />
       <meta name="msapplication-TileColor" content="#1E7EFF" />
       
+      {/* Enhanced SEO Meta Tags */}
+      <meta name="application-name" content="Momta 2028" />
+      <meta name="apple-mobile-web-app-title" content="Momta 2028" />
+      <meta name="format-detection" content="telephone=no" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="msapplication-config" content="/browserconfig.xml" />
+      <meta name="msapplication-TileColor" content="#1E7EFF" />
+      <meta name="msapplication-tap-highlight" content="no" />
+      
+      {/* Geo Tags for Local SEO */}
+      <meta name="geo.region" content="US" />
+      <meta name="geo.placename" content="United States" />
+      
       {/* Preload Critical Fonts */}
       <link
         rel="preload"
@@ -68,6 +83,7 @@ export function SEOHead({
       {/* DNS Prefetch for External Resources */}
       <link rel="dns-prefetch" href="//fonts.googleapis.com" />
       <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+      <link rel="dns-prefetch" href="//supabase.co" />
       
       {/* Structured Data */}
       {structuredData && (
