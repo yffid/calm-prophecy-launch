@@ -6,6 +6,7 @@ import { Navbar } from '@/components/sections/navbar';
 import { Hero } from '@/components/sections/hero';
 import { Countdown } from '@/components/sections/countdown';
 import { Vision } from '@/components/sections/vision';
+import { Timeline } from '@/components/sections/timeline';
 import { SubscribeForm } from '@/components/sections/subscribe-form';
 import { Footer } from '@/components/sections/footer';
 
@@ -35,6 +36,9 @@ const Index = () => {
 
         {/* Vision Section */}
         <Vision />
+
+        {/* Timeline Section */}
+        <Timeline />
 
         {/* Spacer for Visual Breathing Room */}
         <section className="py-20">
