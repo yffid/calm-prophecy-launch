@@ -45,40 +45,49 @@ export function SubscribeForm({ isOpen, onClose }: SubscribeFormProps) {
     setIsSubmitting(true);
     
     try {
-      // Check if email already exists
-      const { data: existingUser } = await supabase
-        .from('waitlist')
-        .select('email, discount_code')
-        .eq('email', data.email)
-        .single();
-
-      if (existingUser) {
-        toast({
-          title: "Already registered!",
-          description: `You're already on our waitlist with discount code: ${existingUser.discount_code}`,
-          variant: "default",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Insert new subscriber
-      const { data: newSubscriber, error } = await supabase
-        .from('waitlist')
-        .insert({
+      // Use the edge function for secure, rate-limited subscription
+      const { data: result, error } = await supabase.functions.invoke('subscribe', {
+        body: {
           name: data.name,
           email: data.email,
           phone: data.phone || null,
-          status: 'pending',
-        })
-        .select('discount_code')
-        .single();
+        }
+      });
 
       if (error) {
-        throw error;
+        console.error('Error calling subscribe function:', error);
+        toast({
+          title: "Network Error",
+          description: "Please check your connection and try again.",
+          variant: "destructive",
+        });
+        return;
       }
 
-      setDiscountCode(newSubscriber.discount_code);
+      if (result.error) {
+        if (result.error.includes('already registered') || result.error.includes('Email already registered')) {
+          toast({
+            title: "Already registered!",
+            description: "You're already on our waitlist. Check your email for your discount code.",
+            variant: "default",
+          });
+        } else if (result.error.includes('Too many requests')) {
+          toast({
+            title: "Slow down!",
+            description: "Too many requests. Please try again in a few minutes.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: result.error,
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
+      setDiscountCode(result.discount_code);
       setIsSuccess(true);
       reset();
 

@@ -40,8 +40,7 @@ export function Navbar({ onJoinWaitlist }: NavbarProps) {
 
   const navItems = [
     { label: 'Vision', href: '#vision' },
-    { label: 'Timeline', href: '#timeline' },
-    { label: 'Future', href: '#future' },
+    { label: 'Admin', href: '/admin' },
   ];
 
   return (
