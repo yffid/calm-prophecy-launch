@@ -8,6 +8,8 @@ import { ErrorBoundary } from '@/components/error/ErrorBoundary';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Index from "./pages/Index";
+import Updates from "./pages/Updates";
+import Research from "./pages/Research";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
@@ -40,6 +42,8 @@ const App = () => (
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Index />} />
+                <Route path="/updates" element={<Updates />} />
+                <Route path="/research" element={<Research />} />
                 <Route path="/auth" element={<Auth />} />
                 
                 {/* Protected Admin Routes */}

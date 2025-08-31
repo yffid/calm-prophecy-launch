@@ -65,6 +65,99 @@ export type Database = {
         }
         Relationships: []
       }
+      research: {
+        Row: {
+          created_at: string | null
+          description: string
+          file_url: string | null
+          id: string
+          keywords: string[] | null
+          meta_description: string | null
+          published: boolean | null
+          published_at: string | null
+          research_url: string | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          file_url?: string | null
+          id?: string
+          keywords?: string[] | null
+          meta_description?: string | null
+          published?: boolean | null
+          published_at?: string | null
+          research_url?: string | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          file_url?: string | null
+          id?: string
+          keywords?: string[] | null
+          meta_description?: string | null
+          published?: boolean | null
+          published_at?: string | null
+          research_url?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      updates: {
+        Row: {
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          featured: boolean | null
+          id: string
+          image_url: string | null
+          keywords: string[] | null
+          meta_description: string | null
+          published: boolean | null
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          published?: boolean | null
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured?: boolean | null
+          id?: string
+          image_url?: string | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -124,6 +217,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      extract_keywords: {
+        Args: { content_text: string; title_text: string }
+        Returns: string[]
+      }
+      generate_slug: {
+        Args: { title_text: string }
+        Returns: string
+      }
       get_waitlist_stats: {
         Args: Record<PropertyKey, never>
         Returns: Json

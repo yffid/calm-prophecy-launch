@@ -105,3 +105,35 @@ export const websiteStructuredData = {
     ]
   }
 };
+
+// Updates structured data
+export const updateStructuredData = (updates: any[]) => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Momta Technology Updates",
+  "description": "Latest updates and news from Momta in AI robotics and technology development",
+  "itemListElement": updates.map((update, index) => ({
+    "@type": "Article",
+    "position": index + 1,
+    "headline": update.title,
+    "description": update.excerpt || update.content?.substring(0, 200),
+    "author": {
+      "@type": "Organization",
+      "name": "Momta Technology"
+    },
+    "publisher": {
+      "@type": "Organization", 
+      "name": "Momta Technology",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://momta.org/logo.png"
+      }
+    },
+    "datePublished": update.published_at,
+    "dateModified": update.updated_at,
+    "image": update.image_url || "https://momta.org/og-image.jpg",
+    "url": `https://momta.org/updates/${update.slug}`,
+    "keywords": update.keywords?.join(", ") || "AI, robotics, technology, momta"
+  }))
+});
+
