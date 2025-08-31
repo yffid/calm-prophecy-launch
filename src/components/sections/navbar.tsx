@@ -106,9 +106,9 @@ export function Navbar({ onJoinWaitlist }: NavbarProps) {
               >
                 Join Waitlist
               </Button>
-            
-            <ThemeToggle />
-            </div>
+              
+              <ThemeToggle />
+            </motion.div>
 
             {/* Mobile Menu Button */}
             <motion.button

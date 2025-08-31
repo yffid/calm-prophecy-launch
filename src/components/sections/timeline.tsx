@@ -10,7 +10,7 @@ interface TimelineItem {
   title: string;
   description: string;
   details: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: React.ComponentType<any>;
   gradient: string;
   status: 'completed' | 'current' | 'future';
 }

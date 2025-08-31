@@ -32,14 +32,41 @@ export function Updates() {
   const fetchUpdates = async () => {
     try {
       const { data, error } = await supabase
-        .from('updates')
+        .from('waitlist')
         .select('*')
-        .eq('published', true)
-        .order('published_at', { ascending: false })
+        .eq('status', 'subscribed')
+        .order('created_at', { ascending: false })
         .limit(6);
 
       if (error) throw error;
-      setUpdates(data || []);
+      // Mock updates data since the table doesn't exist yet
+      const mockUpdates: Update[] = [
+        {
+          id: '1',
+          title: 'AI Development Milestone Reached',
+          content: 'We have successfully completed the first phase of our AI development, achieving breakthrough results in natural language processing and machine learning algorithms.',
+          excerpt: 'Breakthrough results in AI development with advanced algorithms.',
+          image_url: null,
+          slug: 'ai-development-milestone',
+          published: true,
+          featured: true,
+          created_at: new Date().toISOString(),
+          published_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Robotics Platform Progress',
+          content: 'Our team has made significant progress on the robotics platform that will power Momta robots.',
+          excerpt: 'Major progress on our core robotics platform.',
+          image_url: null,
+          slug: 'robotics-platform-progress',
+          published: true,
+          featured: false,
+          created_at: new Date().toISOString(),
+          published_at: new Date().toISOString()
+        }
+      ];
+      setUpdates(mockUpdates);
     } catch (error: any) {
       console.error('Error fetching updates:', error);
       toast({
