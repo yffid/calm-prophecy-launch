@@ -62,10 +62,13 @@ export default function Admin() {
     try {
       const { data, error } = await supabase.rpc('get_waitlist_stats');
       if (error) throw error;
+      
+      // Type the response properly
+      const statsData = data as any;
       setStats({
-        total: data?.total || 0,
-        today: data?.today || 0,
-        this_week: data?.this_week || 0
+        total: statsData?.total || 0,
+        today: statsData?.today || 0,
+        this_week: statsData?.this_week || 0
       });
     } catch (error: any) {
       console.error('Error fetching stats:', error);
