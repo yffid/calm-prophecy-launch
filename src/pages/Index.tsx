@@ -124,9 +124,18 @@ const Index = () => {
                   >
                     About Momta
                   </motion.span>
-                  <h2 className="display-2 text-momta-slate-light">
-                    Shaping the Future of Technology
-                  </h2>
+                  <motion.h2 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                    viewport={{ once: true }}
+                    className="display-2 text-momta-slate-light"
+                  >
+                    About Us
+                  </motion.h2>
+                  <p className="text-lg text-momta-slate max-w-3xl mx-auto">
+                    Shaping the Future of Technology Through Innovation and Community
+                  </p>
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
